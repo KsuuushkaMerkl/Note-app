@@ -3,6 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_login.exceptions import InvalidCredentialsException
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
+from starlette.requests import Request
 
 from auth.models import User
 from auth.schemas import UserRegisterRequestSchema
@@ -28,7 +29,7 @@ def query_user(login: str):
 
 @app.post("/register")
 @limiter.limit("5/minute")
-async def register(user: UserRegisterRequestSchema):
+async def register(request: Request, user: UserRegisterRequestSchema):
     db = create_session()
     existing_user = db.query(User).filter_by(login=user.login).first()
     if existing_user:
@@ -44,7 +45,7 @@ async def register(user: UserRegisterRequestSchema):
 
 @app.post("/login")
 @limiter.limit("5/minute")
-def login(data: OAuth2PasswordRequestForm = Depends()):
+def login(request: Request, data: OAuth2PasswordRequestForm = Depends()):
     username = data.username
     password = data.password
 
