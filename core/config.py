@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     POSTGRES_PORT: str
+    API_TOKEN: str
 
 
 settings = Settings()

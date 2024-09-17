@@ -17,3 +17,12 @@ services:
       - postgres
     ports:
       - "8061:8000"
+
+  bot:
+    build: .
+    command: python3 /app/bot.py
+    env_file: .env
+    restart: unless-stopped
+    container_name: "bot"
+    depends_on:
+      - app

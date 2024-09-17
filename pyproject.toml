@@ -18,6 +18,7 @@ fastapi-login = "^1.10.1"
 python-multipart = "^0.0.9"
 passlib = "^1.7.4"
 slowapi = "^0.1.9"
+aiogram = "^3.13.0"
 
 
 [build-system]
