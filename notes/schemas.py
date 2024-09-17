@@ -1,10 +1,10 @@
 from datetime import datetime
 from uuid import UUID
 
-from core.schemas import Schemas
+from pydantic import BaseModel
 
 
-class NoteSchema(Schemas):
+class NoteSchema(BaseModel):
     """
     Note schema.
     """
@@ -16,7 +16,7 @@ class NoteSchema(Schemas):
     updated_at: datetime
 
 
-class CreateNoteRequestSchema(Schemas):
+class CreateNoteRequestSchema(BaseModel):
     """
     Create note request schema.
     """
@@ -25,7 +25,7 @@ class CreateNoteRequestSchema(Schemas):
     tags: list[str]
 
 
-class CreateNoteResponseSchema(Schemas):
+class CreateNoteResponseSchema(BaseModel):
     """
     Create note response schema.
     """
@@ -36,7 +36,7 @@ class CreateNoteResponseSchema(Schemas):
     created_at: datetime
 
 
-class UpdateNoteRequestSchema(Schemas):
+class UpdateNoteRequestSchema(BaseModel):
     """
     Update note request schema.
     """
@@ -45,7 +45,7 @@ class UpdateNoteRequestSchema(Schemas):
     tags: list[str] | None = None
 
 
-class UpdateNoteResponseSchema(Schemas):
+class UpdateNoteResponseSchema(BaseModel):
     """
     Update note response schema.
     """
@@ -56,5 +56,5 @@ class UpdateNoteResponseSchema(Schemas):
     updated_at: datetime
     
 
-class NotesTagSchema(Schemas):
+class NotesTagSchema(BaseModel):
     tags: list[str]
