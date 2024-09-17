@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:15
+    env_file: .env
+    ports:
+      - "${POSTGRES_PORT}:5432"
+
+  app:
+    build: .
+    env_file: .env
+    restart: unless-stopped
+    container_name: "note_app"
+    volumes:
+      - .:/app
+    depends_on:
+      - postgres
+    ports:
+      - "8061:8000"
