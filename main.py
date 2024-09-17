@@ -1,11 +1,12 @@
 from fastapi import FastAPI, Depends, HTTPException
-
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_login.exceptions import InvalidCredentialsException
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 from auth.models import User
 from auth.schemas import UserRegisterRequestSchema
-from auth.security import manager, pwd_context
+from auth.security import manager, pwd_context, limiter
 from core.database import create_session
 from notes.endpoints import router
 
@@ -16,12 +17,17 @@ app = FastAPI(
 app.include_router(router, prefix="/note", tags=["Notes"])
 
 
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+
 @manager.user_loader()
 def query_user(login: str):
     return create_session().query(User).filter(User.login == login).first()
 
 
 @app.post("/register")
+@limiter.limit("5/minute")
 async def register(user: UserRegisterRequestSchema):
     db = create_session()
     existing_user = db.query(User).filter_by(login=user.login).first()
@@ -37,6 +43,7 @@ async def register(user: UserRegisterRequestSchema):
 
 
 @app.post("/login")
+@limiter.limit("5/minute")
 def login(data: OAuth2PasswordRequestForm = Depends()):
     username = data.username
     password = data.password
